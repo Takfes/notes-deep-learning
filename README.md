@@ -1,18 +1,22 @@
 ## Resources
 
-- [Youtube Playlist](https://www.youtube.com/playlist?list=PLAqhIrjkxbuWI23v9cThsA9GvCAUhRvKZ) Neural Networks: Zero to Hero by Andrej Karpathy
-- [Youtube Playlist](https://www.youtube.com/playlist?list=PLblh5JKOoLUIxGDQs4LFFD--41Vzf-ME1) Neural Networks / Deep Learning by StatQuest with Josh Starmer
-- [Youtube Playlist]()
-- [Youtube Video](https://www.youtube.com/watch?v=XfpMkf4rD6E&t=10s) CS25 I Stanford Seminar - Transformers United 2023: Introduction to Transformers w/ Andrej Karpathy
+### Youtube
 
-<br>
+- [Neural Networks: Zero to Hero by Andrej Karpathy](https://www.youtube.com/playlist?list=PLAqhIrjkxbuWI23v9cThsA9GvCAUhRvKZ)
+- [CS25 I Stanford Seminar - Transformers United 2023: Introduction to Transformers w/ Andrej Karpathy](https://www.youtube.com/watch?v=XfpMkf4rD6E&t=10s)
+- [Neural Networks / Deep Learning by StatQuest with Josh Starmer](https://www.youtube.com/playlist?list=PLblh5JKOoLUIxGDQs4LFFD--41Vzf-ME1)
+- [Neural Networks in Spreadsheets](https://www.youtube.com/playlist?list=PLDs5gxU1J5CIt5kIiQLC3RBOAKnUAo412)
+- [PyTorch Lightning Tutorials](https://www.youtube.com/playlist?list=PLhhyoLH6IjfyL740PTuXef4TstxAK6nGP)
 
-- [Coursera](https://www.coursera.org/specializations/deep-learning) Deep Learning Specialization
-- [Udemy](https://kaizen.udemy.com/course/deeplearning_x/learn/lecture/27841838#overview) A deep understanding of deep learning (with Python intro)
-- [Udemy](https://kaizen.udemy.com/course/the-complete-neural-networks-bootcamp-theory-applications/learn/lecture/13938882?start=0#overview) The complete neural networks bootcamp theory applications
-- [Coursera](https://www.coursera.org/specializations/natural-language-processing) Natural Language Processing Specialization
-- [Coursera](https://www.coursera.org/specializations/generative-adversarial-networks-gans) Generative Adversarial Networks (GANs) Specialization
+### MOOCS
 
-<br>
+- [Udemy - The Complete Neural Networks Bootcamp: Theory, Applications](https://www.udemy.com/course/the-complete-neural-networks-bootcamp-theory-applications)
+- [Udemy - Mathematical Foundations of Machine Learning](https://www.udemy.com/course/machine-learning-data-science-foundations-masterclass/)
+- [Coursera - Deep Learning Specialization](https://www.coursera.org/specializations/deep-learning)
+- [PyTorch Ultimate 2024: From Basics to Cutting-Edge](https://www.udemy.com/course/pytorch-ultimate/#overview)
 
-- [Blog](https://course.fast.ai/) Practical Deep Learning by Fastai
+### Blog
+
+- [Zero to Mastery Learn PyTorch for Deep Learning](https://www.learnpytorch.io/)
+- [Solving Transformer by Hand: A Step-by-Step Math Example](https://medium.com/gitconnected/understanding-transformers-from-start-to-end-a-step-by-step-math-example-16d4e64e6eb1)
+- [Practical Deep Learning by Fastai](https://course.fast.ai/)
