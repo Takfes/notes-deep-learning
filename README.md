@@ -17,6 +17,10 @@
 
 ### Blog
 
+- [PyTorch Documentation](https://pytorch.org/tutorials/beginner/deep_learning_60min_blitz.html)
+- [Tensorflow Playground](https://playground.tensorflow.org)
+- [Machine Learning Mastery PyTorch](https://machinelearningmastery.com/?s=pytorch&post_type=post&submit=Search)
 - [Zero to Mastery Learn PyTorch for Deep Learning](https://www.learnpytorch.io/)
 - [Solving Transformer by Hand: A Step-by-Step Math Example](https://medium.com/gitconnected/understanding-transformers-from-start-to-end-a-step-by-step-math-example-16d4e64e6eb1)
+- [Common PyTorch Mistakes](https://www.analyticsvidhya.com/blog/2023/02/pytorch-a-comprehensive-guide-to-common-mistakes/)
 - [Practical Deep Learning by Fastai](https://course.fast.ai/)
