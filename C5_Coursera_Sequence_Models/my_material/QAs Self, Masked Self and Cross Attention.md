@@ -1,17 +1,9 @@
-# Attention as linear transformations - embedding weights change based on context
-- [source](https://www.youtube.com/watch?v=UPtG_38Oq8o&list=PLCip3d1iHEMXcAZPhPSb6Br0dykmPKcji&t=2175s)
-
-*   Attention **resolves word ambiguity** by **contextually modifying embeddings**, intuitively visualized as words **"pulling" each other** to new, precise locations in space.
-*   These contextual modifications are achieved through **linear transformations (matrices)**, which **rotate, stretch, or shear** embeddings to create better-separated, context-aware representations.
-*   The **Query (Q) and Key (K)** matrices transform embeddings to **optimize for similarity calculations** (via dot product), quantifying how words relate to each other.
-*   While Q and K are for **finding relationships**, the **Value (V) matrix** creates embeddings **optimized for the Transformer's primary task of next-word prediction**.
-
-# Self, Masked Self and Cross Attention
+# Self Attention (SA), Masked Self Attention (MSA) and Cross Attention
 - [source](https://www.youtube.com/watch?v=uvEax6XwfJc&list=PLCip3d1iHEMXcAZPhPSb6Br0dykmPKcji&t=3s)
 
 All of the 1) Encoder self-attention (bidirectional), 2) Decoder masked self-attention (autoregressive) and 3) Decoder cross-attention (encoder–decoder attention) are implementations of the **Multi Head Attention**, which in turn is based on **the Scaled dot-product attention**. Their main differences lies in their inputs, purpose, masks.
 
-## 1) Encoder self-attention (bidirectional)
+### 1) Encoder self-attention (bidirectional)
 
 **Where:** every encoder layer
 **Inputs:**
@@ -26,7 +18,7 @@ All of the 1) Encoder self-attention (bidirectional), 2) Decoder masked self-att
 
 ---
 
-## 2) Decoder masked self-attention (autoregressive)
+### 2) Decoder masked self-attention (autoregressive)
 
 **Where:** first attention sublayer in each decoder layer
 **Inputs:**
@@ -43,7 +35,7 @@ All of the 1) Encoder self-attention (bidirectional), 2) Decoder masked self-att
 
 ---
 
-## 3) Decoder cross-attention (encoder–decoder attention)
+### 3) Decoder cross-attention (encoder–decoder attention)
 
 **Where:** second attention sublayer in each decoder layer
 **Inputs:**
@@ -60,7 +52,7 @@ All of the 1) Encoder self-attention (bidirectional), 2) Decoder masked self-att
 
 ---
 
-## Shapes: (B, S, d) vs (B, T, d)
+### Shapes: (B, S, d) vs (B, T, d)
 
 * **B** = batch size.
 * **S** = **source** sequence length (encoder side).
@@ -81,7 +73,7 @@ So: last dim `d` is consistent; the **second dimension equals the query length**
 
 ---
 
-## Are $W_Q, W_K, W_V$ shared across blocks?
+### Are $W_Q, W_K, W_V$ shared across blocks?
 
 **No (in the vanilla Transformer).**
 
@@ -91,7 +83,7 @@ So: last dim `d` is consistent; the **second dimension equals the query length**
 
 ---
 
-## How the pieces fit (one sentence each)
+### How the pieces fit (one sentence each)
 
 * **Encoder self-attention**: builds **source memory** `H` = “every source token, with global source context.”
 * **Decoder masked self-attention**: builds **decoder state** `Z` = “what I’ve generated so far, no peeking ahead.”
@@ -99,7 +91,7 @@ So: last dim `d` is consistent; the **second dimension equals the query length**
 
 ---
 
-## Quick mental model (Q/K/V roles)
+### Quick mental model (Q/K/V roles)
 
 * **Query (Q)** = “what I currently need” (decoder state at a step).
 * **Key (K)** = “where in the other sequence is that information stored?”
@@ -111,17 +103,44 @@ So: last dim `d` is consistent; the **second dimension equals the query length**
 
 # How does the decoder “feed what’s already generated”?
 
-there are two (2) different cases, depending on whether the we are during training or inferencing.
+there are two (2) different cases, depending on the state the model is in, i.e. training or inferencing.
 
-**Training (teacher forcing):**
+### Training (teacher forcing):
 
 * During training we feed **the entire Y_in at once** for efficiency (parallelization) (prepend `<BOS>`, drop last token).
+
 * This tensor `Y` (length **T**) goes into the decoder’s **first block (masked self-attention)**.
+
 * Without a mask, self-attention at position t could “peek” at positions > t in Y_in and cheat (leak future tokens), inflating accuracy but breaking causality.
+
 * The **causal mask** ensures position *t* can only attend to `<  t` positions, even though the whole sequence is present.
+
 * The causal mask zeros out attention to future positions, enforcing the same constraint the model faces at inference.
 
-**Inference (generation):**
+* The causal mask is essential to enable parallel training without information leakage. At inference you usually feed only the prefix anyway, which already prevents seeing the future; the mask is still part of the layer but becomes effectively redundant if you truly pass one step at a time. (It matters again if you batch multiple steps or use caching/speculative decoding.)
+
+* In training we feed the **entire** decoder input once:
+
+  ```
+  Y_in = [<BOS>, Jane, visits, Africa, in]
+  Y_out = [Jane, visits, Africa, in, September, <EOS>]
+  ```
+* The decoder predicts **each next token** in parallel. Conceptually, each position t sees only the **prefix** and must predict **y\_t**:
+
+| t | decoder sees (masked SA lets it attend only up to t-1) | target y\_t |
+| - | ------------------------------------------------------ | ----------- |
+| 1 | `<BOS>`                                                | `Jane`      |
+| 2 | `<BOS> Jane`                                           | `visits`    |
+| 3 | `<BOS> Jane visits`                                    | `Africa`    |
+| 4 | `<BOS> Jane visits Africa`                             | `in`        |
+| 5 | `<BOS> Jane visits Africa in`                          | `September` |
+| 6 | `<BOS> Jane visits Africa in September`                | `<EOS>`     |
+
+* **the label at step t is a single next token**, not the whole growing string (“Jane visits”). We compute a loss at **every position** (sum/mean of cross-entropy over t), but we get all logits in **one forward pass** thanks to the **causal mask**.
+
+* The encoder output `H` (from the French source) is available to every position via **cross-attention** during that same pass.
+
+### Inference (autoregressive decoding/generation) :
 
 * Start with `Y = [<BOS>]`.
 * Greedy/beam loop:
@@ -135,8 +154,52 @@ there are two (2) different cases, depending on whether the we are during traini
 
 * Throughout, the **encoder output `H` is fixed**. In **cross-attention**, queries come from the decoder’s current states, keys/values come from `H`. So each step’s query **pulls source context** from `H` and combines it with the decoder’s own left-context (from masked self-attn).
 
-**Intuition flow**
+---
+
+Now we don’t have ground truth, so we generate **sequentially**:
+
+1. Start with:
+
+   ```
+   Y = [<BOS>]
+   ```
+
+   Run decoder (masked SA over just `<BOS>`, cross-attn over encoder `H`) → logits → pick `Jane`.
+   `Y = [<BOS>, Jane]`
+
+2. Run again with the new prefix:
+
+   ```
+   Y = [<BOS>, Jane]
+   ```
+
+   → predict `visits`.
+   `Y = [<BOS>, Jane, visits]`
+
+3. Repeat:
+
+   * `[<BOS>, Jane, visits]` → `Africa`
+   * `[<BOS>, Jane, visits, Africa]` → `in`
+   * `[<BOS>, Jane, visits, Africa, in]` → `September`
+   * `[... , September]` → `<EOS>` → stop
+
+Under the hood:
+
+* **Masked self-attention** builds “what I’ve said so far.”
+* **Cross-attention** queries the fixed encoder memory `H` to pull the relevant French context each step.
+* For speed, implementations use **KV caching** so you don’t recompute attention over the whole prefix each time.
+
+---
+
+### Intuition flow**
 
 1. **Encoder self-attn →** build **source memory** `H` (each source token enriched by all source tokens) fixed throughout.
 2. **Decoder masked self-attn →** build **decoder state** for the current prefix (each target position sees only past).
 3. **Decoder cross-attn →** use decoder state as **Q**, encoder memory as **K/V**, to fetch the **relevant source info** for predicting the next token.
+
+---
+
+### TL;DR
+
+* **Training:** whole target sequence processed **in parallel**; causal mask prevents peeking ahead; loss at every step.
+* **Inference:** generate **one token at a time**, appending to the prefix; same blocks, same masks, but now the prefix grows each step.
