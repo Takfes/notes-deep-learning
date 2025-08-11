@@ -19,7 +19,7 @@ env.bak/
 
 # IDE specific files
 .idea/
-.vscode/
+# .vscode/
 
 # Compiled Python files
 *.pyc
