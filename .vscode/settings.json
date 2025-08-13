@@ -1,8 +1,40 @@
 {
-    # Ensures when you run code interactively (e.g., using "Run Selection/Line in Python Terminal"), 
-    # VSCode changes the working directory to the folder of the active Python file.
-    "python.terminal.executeInFileDir": true,
+  // Ensures when you run code interactively (e.g., using "Run Selection/Line in Python Terminal"),
+  // VSCode changes the working directory to the folder of the active Python file.
+  "python.terminal.executeInFileDir": true,
 
-    # Makes the Jupyter interactive window start in the directory of the current notebook or script.
-    "jupyter.notebookFileRoot": "${fileDirname}"
+  // Makes the Jupyter interactive window start in the directory of the current notebook or script.
+  "jupyter.notebookFileRoot": "${fileDirname}",
+
+  // Enable Ruff for Python files and notebooks
+  "ruff.enable": true,
+  "ruff.organizeImports": true,
+
+  // Enable formatting for notebooks
+  "notebook.formatOnSave.enabled": true,
+  "notebook.codeActionsOnSave": {
+    "source.organizeImports": "explicit"
+  },
+
+  // Enable Ruff for Python files and notebooks
+  "ruff.enable": true,
+  "ruff.organizeImports": true,
+
+  // Configure format on save for notebooks
+  "[jupyter-notebook]": {
+    "editor.defaultFormatter": "charliermarsh.ruff",
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit"
+    }
+  },
+
+  // Also configure for Python cells in notebooks
+  "[python]": {
+    "editor.defaultFormatter": "charliermarsh.ruff",
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit"
+    }
+  }
 }
