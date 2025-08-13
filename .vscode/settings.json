@@ -1,0 +1,8 @@
+{
+    # Ensures when you run code interactively (e.g., using "Run Selection/Line in Python Terminal"), 
+    # VSCode changes the working directory to the folder of the active Python file.
+    "python.terminal.executeInFileDir": true,
+
+    # Makes the Jupyter interactive window start in the directory of the current notebook or script.
+    "jupyter.notebookFileRoot": "${fileDirname}"
+}

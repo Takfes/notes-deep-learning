@@ -32,6 +32,6 @@ env.bak/
 .DS_Store
 Thumbs.db
 
-# Custom files
-pages.csv
-TODOS.md
+# Custom ignore files
+PyTorch_Youtube_Luke_Ditria
+REMARK.md

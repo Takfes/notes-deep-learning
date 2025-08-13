@@ -25,6 +25,7 @@
 
 ### Blog
 
+- [OneTab Collection](https://www.one-tab.com/page/jxNFW75tSnK2vU7e9AvTdA)
 - [AI Summer Blog](https://theaisummer.com/)
 - [PyTorch Documentation](https://pytorch.org/tutorials/beginner/deep_learning_60min_blitz.html)
 - [Zero to Mastery Learn PyTorch for Deep Learning](https://www.learnpytorch.io/)
