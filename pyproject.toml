@@ -11,7 +11,9 @@ dependencies = [
     "numpy>=2.3.2",
     "pandas>=2.3.1",
     "scikit-learn>=1.7.1",
+    "tensorboard>=2.20.0",
     "torch>=2.8.0",
+    "torchinfo>=1.8.0",
     "torchviz>=0.0.3",
     "tqdm>=4.67.1",
 ]
