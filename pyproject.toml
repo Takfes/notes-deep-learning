@@ -10,6 +10,7 @@ dependencies = [
     "matplotlib>=3.10.5",
     "numpy>=2.3.2",
     "pandas>=2.3.1",
+    "scikit-learn>=1.7.1",
     "torch>=2.8.0",
     "torchviz>=0.0.3",
     "tqdm>=4.67.1",
@@ -78,17 +79,17 @@ dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 [tool.ruff.lint.isort]
 # Import sorting configuration
 combine-as-imports = true
-force-sort-within-sections = true
+force-sort-within-sections = false  # Changed from true - can cause issues in notebooks
 known-first-party = []
 known-third-party = []
 section-order = [
     "future",
-    "standard-library",
+    "standard-library", 
     "third-party",
     "first-party",
     "local-folder",
 ]
-split-on-trailing-comma = true
+split-on-trailing-comma = false  # Changed from true - can cause formatting issues
 
 [tool.ruff.format]
 # Like Black, use double quotes for strings.

@@ -14,27 +14,24 @@
   "notebook.formatOnSave.enabled": true,
   "notebook.codeActionsOnSave": {
     "source.organizeImports": "explicit"
-  },
-
-  // Enable Ruff for Python files and notebooks
-  "ruff.enable": true,
-  "ruff.organizeImports": true,
-
-  // Configure format on save for notebooks
-  "[jupyter-notebook]": {
-    "editor.defaultFormatter": "charliermarsh.ruff",
-    "editor.formatOnSave": true,
-    "editor.codeActionsOnSave": {
-      "source.organizeImports": "explicit"
-    }
-  },
-
-  // Also configure for Python cells in notebooks
-  "[python]": {
-    "editor.defaultFormatter": "charliermarsh.ruff",
-    "editor.formatOnSave": true,
-    "editor.codeActionsOnSave": {
-      "source.organizeImports": "explicit"
-    }
   }
+
+  // // Configure format on save for notebooks
+  // "[jupyter-notebook]": {
+  //   "editor.defaultFormatter": "charliermarsh.ruff",
+  //   "editor.formatOnSave": true,
+  //   "editor.codeActionsOnSave": {
+  //     // Disabled for notebooks to prevent issues
+  //     // "source.organizeImports": "explicit"
+  //   }
+  // },
+
+  // // Also configure for Python cells in notebooks
+  // "[python]": {
+  //   "editor.defaultFormatter": "charliermarsh.ruff",
+  //   "editor.formatOnSave": true,
+  //   "editor.codeActionsOnSave": {
+  //     "source.organizeImports": "explicit"
+  //   }
+  // }
 }
