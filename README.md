@@ -7,6 +7,7 @@
 - [3Blue1Brow Neural Networks](https://www.youtube.com/playlist?list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi)
 - [Neural Networks: Zero to Hero by Andrej Karpathy](https://www.youtube.com/playlist?list=PLAqhIrjkxbuWI23v9cThsA9GvCAUhRvKZ)
 - [Neural Networks in Spreadsheets](https://www.youtube.com/playlist?list=PLDs5gxU1J5CIt5kIiQLC3RBOAKnUAo412)
+- [Livecoding Autograd Library](https://www.youtube.com/watch?v=RxmBukb-Om4&list=PLeDtc0GP5ICldMkRg-DkhpFX1rRBNHTCs)
 - [Sequence Models Custom Playlist](https://www.youtube.com/playlist?list=PLCip3d1iHEMXcAZPhPSb6Br0dykmPKcji)
 - [Neural Networks Custom Playlist](https://www.youtube.com/playlist?list=PLCip3d1iHEMVRHP8cmXSFmhFVtfmxdLcC)
 - [Learn with Jay](https://www.youtube.com/@MachineLearningWithJay/playlists)
@@ -28,7 +29,10 @@
 ## Topics
 ### Neural Networks
 
-- [Loss functions](https://arjun-sarkar786.medium.com/implementation-of-all-loss-functions-deep-learning-in-numpy-tensorflow-and-pytorch-e20e72626ebd) & [Softmax and CrossEntropy](https://www.youtube.com/watch?v=7q7E91pHoW4&list=PLqnslRFeH2UrcDBWF5mfPGpqQDSta6VK4&index=11)
+- [Derivative Calculator](https://www.derivative-calculator.net/)
+- [Loss functions](https://arjun-sarkar786.medium.com/implementation-of-all-loss-functions-deep-learning-in-numpy-tensorflow-and-pytorch-e20e72626ebd)
+- [Softmax and CrossEntropy](https://www.youtube.com/watch?v=7q7E91pHoW4&list=PLqnslRFeH2UrcDBWF5mfPGpqQDSta6VK4&index=11)
+- [Backpropagation - AI by Hand](https://www.byhand.ai/p/backpropagation-spreadsheet)
 
 ### Sequence Models
 
@@ -38,6 +42,7 @@
 
 ## Blogs
 
+- [AI by Hand](https://www.byhand.ai/)
 - [AI Summer Blog](https://theaisummer.com/)
 - [PyTorch Documentation](https://pytorch.org/tutorials/beginner/deep_learning_60min_blitz.html)
 - [Practical Deep Learning by Fastai](https://course.fast.ai/)
