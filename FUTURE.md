@@ -31,4 +31,5 @@ timeframes.
 ---
 
 **graph_networks**
--  test PyTorch Geometric dataset - perform the same prediction task once using the readily available layers and the other, creating the network from scratch (either numpy or torch)
+- enable gnn explainer excel, how does adjacency, normalized adjacencny etc
+- test PyTorch Geometric dataset - perform the same prediction task once using the readily available layers and the other, creating the network from scratch (either numpy or torch)

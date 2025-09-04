@@ -24,7 +24,10 @@
 - [Udemy - Mathematical Foundations of Machine Learning](https://www.udemy.com/course/machine-learning-data-science-foundations-masterclass/)
 
 ## 👾 Graph Neural Networks
+
+- [PyTorch Geometric](https://pytorch-geometric.readthedocs.io/en/stable/get_started/colabs.html)
 - [Graph Neurals Custom](https://www.youtube.com/playlist?list=PLCip3d1iHEMUvHjsVUKqt0hKueMzLJNJr)
+- [OneTab Curated Links](https://www.one-tab.com/page/RIMa3xSVQ2qMZK-o6Fd7ug)
 - [Stanford CS224W](https://www.youtube.com/playlist?list=PLoROMvodv4rPLKxIpqhjhPgdQy7imNkDn)
 - [The AI Epiphany](https://www.youtube.com/playlist?list=PLBoQnSflObckArGNhOcNg7lQG_f0ZlHF5)
 - [WelcomAIOverlords](https://www.youtube.com/playlist?list=PLSgGvve8UweGx4_6hhrF3n4wpHf_RV76_)
