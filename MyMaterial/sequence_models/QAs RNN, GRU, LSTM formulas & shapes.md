@@ -1,13 +1,13 @@
-# 1) Vanilla RNN
+## 1) RNN
 
 ### Forward
 
-* **Activation** :
+* **Hidden State/Context/Activation** :
     $$
     a^{\langle t\rangle} = g\!\left(W_{aa}a^{\langle t-1\rangle} + W_{ax}x^{\langle t\rangle} + b_a\right)
     $$
 
-* **Output** :
+* **Predictions/Output**:
     $$
     \quad
     y^{\langle t\rangle}=g_{\text{out}}\!\left(W_{ya}a^{\langle t\rangle}+b_y\right)
@@ -41,83 +41,128 @@ $$ W_a\,\bar{x}^{\langle t\rangle}=W_{aa}a^{\langle t-1\rangle}+W_{ax}x^{\langle
 ### Shapes
 
 * Input dim $d$, hidden dim $h$, output dim $o$.
-* **Split:** $W_{ax}\in\mathbb{R}^{h\times d},\;W_{aa}\in\mathbb{R}^{h\times h},\;b_a\in\mathbb{R}^{h\times1},\;W_{ya}\in\mathbb{R}^{o\times h},\;b_y\in\mathbb{R}^{o\times1}$.
-* **Concatenated:** $W_a\in\mathbb{R}^{h\times(h+d)}$ (just $[W_{aa}\;W_{ax}]$ side-by-side), $b_a\in\mathbb{R}^{h\times1}$
+* $x^{\langle t\rangle} \in\mathbb{R}^{d\times1}$
+* $a^{\langle t-1\rangle}, \in\mathbb{R}^{h\times1}$
+* $y^{\langle t\rangle} \in\mathbb{R}^{o\times1}$
+* $W_{ax}\in\mathbb{R}^{h\times d},\;W_{aa}\in\mathbb{R}^{h\times h},\;b_a\in\mathbb{R}^{h\times1},\;W_{ya}\in\mathbb{R}^{o\times h},\;b_y\in\mathbb{R}^{o\times1}$.
+* $W_a\in\mathbb{R}^{h\times(h+d)}$ (just $[W_{aa}\;W_{ax}]$ side-by-side), $b_a\in\mathbb{R}^{h\times1}$
+
+<p align="center">
+<img src="recurrent-cells-img1.png" alt="drawing" width="600"/>
+</p>
 
 ---
 
-# 2) GRU
+## 2) GRU
 
 ### Equations
+
+* Remember that $c^{\langle t\rangle}=a^{\langle t\rangle}$
+
+* **Candidate** $\tilde{c}^{\langle t\rangle}$ (a.k.a. candidate hidden):
+
+  $$
+  \tilde{h}^{\langle t\rangle}=\tilde{c}^{\langle t\rangle}=\tanh\!\left(W_c\,[\Gamma_r^{\langle t\rangle}\!\odot c^{\langle t-1\rangle},\,x^{\langle t\rangle}] + b_c\right)
+  $$
+
+* **Update gate** $\Gamma_u$:
+
+  $$
+  \Gamma_u^{\langle t\rangle}=\sigma\!\left(W_u\,[c^{\langle t-1\rangle},\,x^{\langle t\rangle}] + b_u\right)
+  $$
+
+* **Reset (Relevance) gate** $\Gamma_r$:
+
+  $$
+  \Gamma_r^{\langle t\rangle}=\sigma\!\left(W_r\,[c^{\langle t-1\rangle},\,x^{\langle t\rangle}] + b_r\right)
+  $$
+
+* **Hidden State/Context/Activation** $c^{\langle t\rangle}$:
+
+  $$
+  h^{\langle t\rangle}=c^{\langle t\rangle}=\Gamma_u^{\langle t\rangle}\odot \tilde{c}^{\langle t\rangle}+(1-\Gamma_u^{\langle t\rangle})\odot c^{\langle t-1\rangle}
+  $$
+
+* **Predictions/Output**:
+
+  $$
+  \quad
+  y^{\langle t\rangle}=g_{\text{out}}\!\left(W_{ya}a^{\langle t\rangle}+b_y\right)
+  $$
+
+
+### Shapes
+
+* Input dim $d$, hidden dim $h$, output dim $o$.
+* Gates / states: $\Gamma_u^{\langle t\rangle},\Gamma_r^{\langle t\rangle},\tilde{c}^{\langle t\rangle},c^{\langle t\rangle}\in\mathbb{R}^{h\times1}$.
+* $W_u,W_r,W_c\in\mathbb{R}^{h\times(h+d)}$, biases $b_u,b_r,b_c\in\mathbb{R}^{h\times1}$.
+* $y^{\langle t\rangle} \in\mathbb{R}^{o\times1}$
+* $W_{ya}\in\mathbb{R}^{o\times h},\;b_y\in\mathbb{R}^{o\times1}$.
+
+<p align="center">
+<img src="recurrent-cells-img2.png" alt="drawing" width="600"/>
+</p>
+---
+
+## 3) LSTM
+
+### Equations
+
+* In LSTMs $c^{\langle t\rangle} \neq a^{\langle t\rangle}$
+
+* **Candidate** $\tilde{c}^{\langle t\rangle}$:
+
+  $$
+  \tilde{c}^{\langle t\rangle}=\tanh\!\left(W_c\,[a^{\langle t-1\rangle},\,x^{\langle t\rangle}] + b_c\right)
+  $$
 
 * **Update gate** $\Gamma_u$:
 
   $$
   \Gamma_u^{\langle t\rangle}=\sigma\!\left(W_u\,[a^{\langle t-1\rangle},\,x^{\langle t\rangle}] + b_u\right)
   $$
-* **Reset gate** $\Gamma_r$:
 
-  $$
-  \Gamma_r^{\langle t\rangle}=\sigma\!\left(W_r\,[a^{\langle t-1\rangle},\,x^{\langle t\rangle}] + b_r\right)
-  $$
-* **Candidate** $\tilde{c}^{\langle t\rangle}$ (a.k.a. candidate hidden):
-
-  $$
-  \tilde{h}^{\langle t\rangle}=\tilde{c}^{\langle t\rangle}=\tanh\!\left(W_c\,[\Gamma_r^{\langle t\rangle}\!\odot a^{\langle t-1\rangle},\,x^{\langle t\rangle}] + b_c\right)
-  $$
-* **Hidden / output** $a^{\langle t\rangle}$:
-
-  $$
-  h^{\langle t\rangle}=a^{\langle t\rangle}=c^{\langle t\rangle}=(1-\Gamma_u^{\langle t\rangle})\odot a^{\langle t-1\rangle}+\Gamma_u^{\langle t\rangle}\odot \tilde{c}^{\langle t\rangle}
-  $$
-
-### Shapes
-
-* Input dim $d$, hidden dim $h$, output dim $o$.
-* Gates / states: $\Gamma_u^{\langle t\rangle},\Gamma_r^{\langle t\rangle},\tilde{c}^{\langle t\rangle},a^{\langle t\rangle},c^{\langle t\rangle}\in\mathbb{R}^{h\times1}$.
-* **Concatenated weights:** $W_u,W_r,W_c\in\mathbb{R}^{h\times(h+d)}$, biases $b_u,b_r,b_c\in\mathbb{R}^{h\times1}$.
-* **Split shape (if used):** $ W\in\mathbb{R}^{h\times d}, U\in\mathbb{R}^{h\times h}$
-
----
-
-# 3) LSTM
-
-### Equations
 
 * **Forget gate** $\Gamma_f$:
 
   $$
   \Gamma_f^{\langle t\rangle}=\sigma\!\left(W_f\,[a^{\langle t-1\rangle},\,x^{\langle t\rangle}] + b_f\right)
   $$
-* **Input gate** $\Gamma_u$ (a.k.a. “update”/“input” gate):
 
-  $$
-  \Gamma_u^{\langle t\rangle}=\sigma\!\left(W_u\,[a^{\langle t-1\rangle},\,x^{\langle t\rangle}] + b_u\right)
-  $$
-* **Candidate** $\tilde{c}^{\langle t\rangle}$:
-
-  $$
-  \tilde{c}^{\langle t\rangle}=\tanh\!\left(W_c\,[a^{\langle t-1\rangle},\,x^{\langle t\rangle}] + b_c\right)
-  $$
-* **Cell update**:
-
-  $$
-  c^{\langle t\rangle}=\Gamma_f^{\langle t\rangle}\odot c^{\langle t-1\rangle}+\Gamma_u^{\langle t\rangle}\odot \tilde{c}^{\langle t\rangle}
-  $$
 * **Output gate** $\Gamma_o$:
 
   $$
   \Gamma_o^{\langle t\rangle}=\sigma\!\left(W_o\,[a^{\langle t-1\rangle},\,x^{\langle t\rangle}] + b_o\right)
   $$
-* **Hidden/output**:
+
+* **Cell State**:
+
+  $$
+  c^{\langle t\rangle}=\Gamma_u^{\langle t\rangle}\odot \tilde{c}^{\langle t\rangle}+\Gamma_f^{\langle t\rangle}\odot c^{\langle t-1\rangle}
+  $$
+
+* **Activation/Hidden State/Context**:
 
   $$
   a^{\langle t\rangle}=\Gamma_o^{\langle t\rangle}\odot \tanh\!\left(c^{\langle t\rangle}\right)
   $$
 
+* **Predictions/Output**:
+
+  $$
+  \quad
+  y^{\langle t\rangle}=g_{\text{out}}\!\left(W_{ya}a^{\langle t\rangle}+b_y\right)
+  $$
+
+
 ### Shapes
 
 * Input dim $d$, hidden dim $h$, output dim $o$.
 * Gates / states: $\Gamma_f^{\langle t\rangle},\Gamma_u^{\langle t\rangle},\Gamma_o^{\langle t\rangle},\tilde{c}^{\langle t\rangle},c^{\langle t\rangle},a^{\langle t\rangle}\in\mathbb{R}^{h\times1}$.
-* **Concatenated weights:** $W_f,W_u,W_o,W_c\in\mathbb{R}^{h\times(h+d)}$, biases $b_f,b_u,b_o,b_c\in\mathbb{R}^{h\times1}$.
-* **Split shape (if used):** for each gate $g\in\{f,u,o,c\}$, $W_{g x}\in\mathbb{R}^{h\times d},\;U_{g a}\in\mathbb{R}^{h\times h}$
+* $W_f,W_u,W_o,W_c\in\mathbb{R}^{h\times(h+d)}$, biases $b_f,b_u,b_o,b_c\in\mathbb{R}^{h\times1}$.
+* $y^{\langle t\rangle} \in\mathbb{R}^{o\times1}$
+* $W_{ya}\in\mathbb{R}^{o\times h},\;b_y\in\mathbb{R}^{o\times1}$.
+
+<p align="center">
+<img src="recurrent-cells-img3.png" alt="drawing" width="600"/>
+</p>

@@ -11,7 +11,8 @@
 
 **seq2seq**
 - recap info on LSTM vs EncDec vs Transformers - resources : [Encoder Decoder Models for Dummies](https://medium.com/plain-simple-software/encoder-decoder-models-simply-explained-25a7fccf46d4), [A study on Attention mechanism](https://medium.com/perceptronai/a-study-on-attention-mechanism-7d199cf783b6), [Attention Seq2Seq with PyTorch: learning to invert a sequence](https://medium.com/data-science/attention-seq2seq-with-pytorch-learning-to-invert-a-sequence-34faf4133e53)
-- pytorch implement 1) recurrent (rnn/gru/lstm), 2) encoder-decoder, 3) encoder-decoder+attention [aladdin persson](https://www.youtube.com/watch?v=EoGUlvhRYpk&list=PLhhyoLH6IjfxeoooqP9rhU3HJIAVAJ3Vz&index=38),[luke ditria](https://www.youtube.com/watch?v=iKZzXisK1-Q&list=PLN8j_qfCJpNhhY26TQpXC5VeK-_q3YLPa&index=23)
+- pytorch implement a recurrent (rnn/gru/lstm), encoder-decoder and encoder-decoder+attention models. 
+[luke ditria](https://www.youtube.com/watch?v=iKZzXisK1-Q&list=PLN8j_qfCJpNhhY26TQpXC5VeK-_q3YLPa&index=23), [aladdin persson](https://www.youtube.com/watch?v=EoGUlvhRYpk&list=PLhhyoLH6IjfxeoooqP9rhU3HJIAVAJ3Vz&index=38)
 - pytorch implement transformer+attention [umar jamil](https://www.youtube.com/watch?v=ISNdQcPhsts&list=PLCip3d1iHEMXcAZPhPSb6Br0dykmPKcji&index=17)
 - review transformers Coursera's assignment W4_1_Transformer_Subclass_v1
 - [Udemy RNN Code Challenges 217,218](https://titancement.udemy.com/course/deeplearning_x/learn/lecture/29274746#overview)
