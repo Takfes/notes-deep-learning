@@ -13,16 +13,10 @@ Main Steps:
 6. Trains the model on the full dataset and tracks RMSE for train/test sets.
 7. Visualizes training progress and prediction results.
 
-Dependencies:
+Motivation:
 -------------
-- numpy
-- pandas
-- matplotlib
-- torch
-- auxtorch (for utility functions)
+https://machinelearningmastery.com/lstm-for-time-series-prediction-in-pytorch/?utm_source=chatgpt.com
 """
-
-from tkinter import HIDDEN
 
 import matplotlib.pyplot as plt
 import numpy as np
