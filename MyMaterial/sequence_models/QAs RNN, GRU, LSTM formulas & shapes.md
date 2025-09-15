@@ -47,6 +47,9 @@ $$ W_a\,\bar{x}^{\langle t\rangle}=W_{aa}a^{\langle t-1\rangle}+W_{ax}x^{\langle
 * $W_{ax}\in\mathbb{R}^{h\times d},\;W_{aa}\in\mathbb{R}^{h\times h},\;b_a\in\mathbb{R}^{h\times1},\;W_{ya}\in\mathbb{R}^{o\times h},\;b_y\in\mathbb{R}^{o\times1}$.
 * $W_a\in\mathbb{R}^{h\times(h+d)}$ (just $[W_{aa}\;W_{ax}]$ side-by-side), $b_a\in\mathbb{R}^{h\times1}$
 
+<br>
+<br>
+
 <p align="center">
 <img src="recurrent-cells-img1.png" alt="drawing" width="600"/>
 </p>
@@ -99,9 +102,13 @@ $$ W_a\,\bar{x}^{\langle t\rangle}=W_{aa}a^{\langle t-1\rangle}+W_{ax}x^{\langle
 * $y^{\langle t\rangle} \in\mathbb{R}^{o\times1}$
 * $W_{ya}\in\mathbb{R}^{o\times h},\;b_y\in\mathbb{R}^{o\times1}$.
 
+<br>
+<br>
+
 <p align="center">
 <img src="recurrent-cells-img2.png" alt="drawing" width="600"/>
 </p>
+
 ---
 
 ## 3) LSTM
@@ -162,6 +169,9 @@ $$ W_a\,\bar{x}^{\langle t\rangle}=W_{aa}a^{\langle t-1\rangle}+W_{ax}x^{\langle
 * $W_f,W_u,W_o,W_c\in\mathbb{R}^{h\times(h+d)}$, biases $b_f,b_u,b_o,b_c\in\mathbb{R}^{h\times1}$.
 * $y^{\langle t\rangle} \in\mathbb{R}^{o\times1}$
 * $W_{ya}\in\mathbb{R}^{o\times h},\;b_y\in\mathbb{R}^{o\times1}$.
+
+<br>
+<br>
 
 <p align="center">
 <img src="recurrent-cells-img3.png" alt="drawing" width="600"/>
