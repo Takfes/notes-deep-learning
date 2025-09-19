@@ -34,10 +34,14 @@ class CustomMLP(nn.Module):
         prev = input_dim
 
         for h in hidden_dims:
+            # Linear Layer
             layers.append(nn.Linear(prev, h))
+            # Optional LayerNorm
             if use_layernorm:
                 layers.append(nn.LayerNorm(h))  # normalize hidden activations
+            # Activation Function
             layers.append(activation())
+            # Optional Dropout
             if dropout > 0:
                 layers.append(nn.Dropout(dropout))
             prev = h

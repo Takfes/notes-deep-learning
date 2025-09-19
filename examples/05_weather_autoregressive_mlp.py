@@ -4,6 +4,7 @@ import torch
 import torch.nn as nn
 from auxtorch import (
     count_parameters,
+    get_device,
     plot_train_vs_test_error,
     plot_true_vs_pred_scatter,
     predict,
@@ -13,37 +14,7 @@ from auxtorch import (
 from torch.utils.data import DataLoader
 from weather_dataset import WeatherDataset
 
-
 # ===== Define functions and Classes =====
-class CustomMLP(nn.Module):
-    def __init__(
-        self,
-        input_dim: int,
-        hidden_dims: tuple = (64,),
-        output_dim: int = 1,
-        activation: nn.Module = nn.Tanh,
-        dropout: float = 0.0,
-        use_layernorm: bool = False,
-    ):
-        super().__init__()
-
-        layers = []
-        prev = input_dim
-
-        for h in hidden_dims:
-            layers.append(nn.Linear(prev, h))
-            if use_layernorm:
-                layers.append(nn.LayerNorm(h))  # normalize hidden activations
-            layers.append(activation())
-            if dropout > 0:
-                layers.append(nn.Dropout(dropout))
-            prev = h
-
-        layers.append(nn.Linear(prev, output_dim))  # output head
-        self.net = nn.Sequential(*layers)
-
-    def forward(self, x):
-        return self.net(x)
 
 
 # ===== Define Constants =====

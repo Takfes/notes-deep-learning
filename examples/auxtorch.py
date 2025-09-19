@@ -1,6 +1,15 @@
 import torch
 
 
+def get_device():
+    if torch.cuda.is_available():
+        return torch.device("cuda")
+    elif torch.backends.mps.is_available():
+        return torch.device("mps")
+    else:
+        return torch.device("cpu")
+
+
 def count_parameters(model):
     return sum(x.flatten().shape[0] for x in model.parameters() if hasattr(x, "shape"))
 
