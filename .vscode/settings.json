@@ -1,4 +1,15 @@
 {
+  // Coding Agent specific settings
+  "chat.mcp.discovery": { "enabled": false },
+  "chat.promptFiles": true,
+  // Use repository instruction files for Copilot Chat when available
+  "github.copilot.chat.codeGeneration.useInstructionFiles": true,
+
+  // MCP autostart policy: never auto-start servers when config changes
+  // Valid values: "never", "onlyNew", "newAndOutdated"
+  "chat.mcp.autostart": "never"
+}
+{
   // Ensures when you run code interactively (e.g., using "Run Selection/Line in Python Terminal"),
   // VSCode changes the working directory to the folder of the active Python file.
   "python.terminal.executeInFileDir": true,

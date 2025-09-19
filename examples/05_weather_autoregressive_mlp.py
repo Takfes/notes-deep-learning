@@ -11,6 +11,7 @@ from auxtorch import (
     print_model_parameters,
     print_model_structure,
 )
+from pretorch import CustomMLP
 from torch.utils.data import DataLoader
 from weather_dataset import WeatherDataset
 
