@@ -123,57 +123,6 @@ class CustomMLP(nn.Module):
         return self.net(x)
 
 
-class RNNCell(nn.Module):
-    """
-    Simple RNN cell with tanh activation and output head.
-
-    Attributes:
-        input_size (int): Input feature dimension.
-        hidden_size (int): Hidden state dimension.
-        i2h (nn.Linear): Input-to-hidden linear layer.
-        h2o (nn.Linear): Hidden-to-output linear layer.
-        activation (nn.Module): Activation function (Tanh).
-    """
-
-    input_size: int
-    hidden_size: int
-    i2h: nn.Linear
-    h2o: nn.Linear
-    activation: nn.Module
-
-    def __init__(self, input_size: int, hidden_size: int) -> None:
-        """
-        Initializes the RNN cell.
-
-        Args:
-            input_size (int): Input feature dimension.
-            hidden_size (int): Hidden state dimension.
-        """
-        super(RNNCell, self).__init__()
-        self.input_size = input_size
-        self.hidden_size = hidden_size
-        self.i2h = nn.Linear(input_size + hidden_size, hidden_size)
-        self.h2o = nn.Linear(hidden_size, 1)
-        self.activation = nn.Tanh()
-
-    def forward(self, input: torch.Tensor, hidden: torch.Tensor) -> tuple:
-        """
-        Forward pass for the RNN cell.
-
-        Args:
-            input (torch.Tensor): Input tensor of shape (batch, input_size).
-            hidden (torch.Tensor): Hidden state tensor of shape (batch, hidden_size).
-
-        Returns:
-            tuple: (output tensor, new hidden state)
-        """
-        # Concatenate input and previous hidden state
-        combined = torch.cat((input, hidden), 1)
-        hidden = self.activation(self.i2h(combined))
-        output = self.h2o(hidden)
-        return output, hidden
-
-
 class CustomRNN(nn.Module):
     """
     Basic RNN block. This represents a single layer of RNN
@@ -192,8 +141,9 @@ class CustomRNN(nn.Module):
         self.i2h = nn.Linear(input_size, hidden_size, bias=False)
         self.h2h = nn.Linear(hidden_size, hidden_size)
         self.h2o = nn.Linear(hidden_size, output_size)
+        self.activation = nn.Tanh()
 
-    def forward(self, x, hidden_state) -> tuple[torch.Tensor, torch.Tensor]:
+    def forward(self, x, hidden_state=None) -> tuple[torch.Tensor, torch.Tensor]:
         """
         Returns computed output and tanh(i2h + h2h)
         Inputs
@@ -205,8 +155,11 @@ class CustomRNN(nn.Module):
         out: Linear output (without activation because of how pytorch works)
         hidden_state: New hidden state matrix
         """
-        x = self.i2h(x)
-        hidden_state = self.h2h(hidden_state)
-        hidden_state = torch.tanh(x + hidden_state)
-        out = self.h2o(hidden_state)
-        return out, hidden_state
+        hidden_state = (
+            torch.zeros(x.size(0), self.h2h.in_features, device=x.device)
+            if hidden_state is None
+            else hidden_state
+        )
+        h = self.activation(self.h2h(hidden_state) + self.i2h(x))
+        y_t = self.h2o(h)
+        return y_t, h
