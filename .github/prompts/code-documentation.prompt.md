@@ -16,7 +16,7 @@ Improve the documentation of a Python script to maximize clarity and maintainabi
 
 - Add a summary (abstract) at the top of the script describing its overall purpose
 - Add Google-style docstrings to every function and class
-- Add type annotations for all function arguments and return types (duck typing preferred)
+- Add type annotations for all function arguments and return types
 - Add type annotations for class attributes
 - Insert inline comments explaining non-trivial code sections
 - Ensure all code is well documented and easy to understand
