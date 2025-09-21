@@ -45,8 +45,9 @@
 
 ### 🔗 Sequence Models
 
-- [OneTab Collection Sequence Models](https://www.one-tab.com/page/2I6soAbxQB2zbIjoTiSSBg)
-- [OneTab Collection RNN, LSTM, GRU](https://www.one-tab.com/page/6Nml-HhCQg2b5N3eaI0hoA)
+- [OneTab Collection RNN, LSTM, GRU](https://www.one-tab.com/page/fZvG-bI2RIakYhukEN5sOw)
+- [OneTab Collection Encoder-Decoder](https://www.one-tab.com/page/wgebBH4pQ4iiXXU-zs2aAQ)
+- [OneTab Collection Transformers](https://www.one-tab.com/page/Fvb7DPu4ShKHDqg_zqc5JQ)
 - [Zero to Mastery Learn PyTorch for Deep Learning](https://www.learnpytorch.io/)
 - [Solving Transformer by Hand: A Step-by-Step Math Example](https://medium.com/gitconnected/understanding-transformers-from-start-to-end-a-step-by-step-math-example-16d4e64e6eb1)
 

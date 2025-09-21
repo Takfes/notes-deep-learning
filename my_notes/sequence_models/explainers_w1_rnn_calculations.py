@@ -49,4 +49,6 @@ pd.DataFrame(
 output, hn = rnn(X)
 
 output
+output.shape
 hn
+hn.shape

@@ -25,12 +25,14 @@ import torch
 import torch.nn as nn
 from auxtorch import (
     count_parameters,
-    plot_train_vs_test_error,
-    plot_true_vs_pred_scatter,
-    plot_true_vs_pred_timeseries,
     predict,
     print_model_parameters,
     print_model_structure,
+)
+from helpers import (
+    plot_train_vs_test_error,
+    plot_true_vs_pred_scatter,
+    plot_true_vs_pred_timeseries,
 )
 from torch.optim import Adam
 from torch.utils.data import DataLoader, TensorDataset
@@ -128,7 +130,7 @@ for epoch in range(NUM_EPOCHS):
     assert y_pred_train.shape == yb.shape
     train_rmse = np.sqrt(loss_fn(y_pred_train, yb).item())
     train_error.append(train_rmse)
-    print(f"epoch: {epoch+1}/{NUM_EPOCHS}, train_rmse: {train_rmse:.4f}")
+    print(f"epoch: {epoch + 1}/{NUM_EPOCHS}, train_rmse: {train_rmse:.4f}")
 
 
 # Scatterplot between y_pred_train and yb (from overfitting batch)
@@ -165,7 +167,7 @@ for epoch in range(NUM_EPOCHS):
     train_error.append(train_rmse)
     test_error.append(test_rmse)
     print(
-        f"epoch: {epoch+1}/{NUM_EPOCHS}, train_rmse: {train_rmse:.4f}, test_rmse: {test_rmse:.4f}"
+        f"epoch: {epoch + 1}/{NUM_EPOCHS}, train_rmse: {train_rmse:.4f}, test_rmse: {test_rmse:.4f}"
     )
 
 # Plot training and test error over epochs
