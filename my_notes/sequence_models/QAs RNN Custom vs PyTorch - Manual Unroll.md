@@ -1,3 +1,40 @@
+
+## motivation - [NLP From Scratch: Generating Names with a Character-Level RNN](https://docs.pytorch.org/tutorials/intermediate/char_rnn_generation_tutorial.html). How does this custom architecture differe vs an out-of-the-box nn.RNN implementation? 
+
+### nn.RNN loops through timesteps internally, maintaining and updating a hidden state
+- What nn.RNN would do instead; **nn.RNN encapsulates the recurrence internally**. You pass it the **whole sequence tensor** and it returns output and h_n.
+- “Is recurrence handled by the way we set up training?”; Partly. The recurrence is implemented in the forward (the i2h mapping that consumes h_{t-1}), and the **training code drives it timestep by timestep**
+- Check a high level implementation of [nn.RNN](https://docs.pytorch.org/docs/stable/generated/torch.nn.RNN.html?utm_source=chatgpt.com). Iterates over sequence length (and layers)
+
+### When using nn.RNN, you typically provide input as a batch of sequences.
+- In nn.RNN you would run the input through the network through dedicated data structures/matrices, instead of running through examples a word at a time(?)
+- Padding: You manually extend each sequence in a batch to the same fixed length by adding a special token <PAD> to shorter sequences.
+- Packing: pack_padded_sequence() in PyTorch convert a padded batch into a compact representation that only includes valid timesteps. The RNN then skips computations on padding, yielding both efficiency and cleaner handling of hidden state outputs.
+- [Why do we "pack" the sequences in PyTorch?](https://stackoverflow.com/questions/51030782/why-do-we-pack-the-sequences-in-pytorch)
+
+
+### Iterative loss accumulation is needed for the custom implementation with the loop.  
+- For each character in the word, call rnn(category, input_char_t, hidden) to get (output_t, hidden_t).
+- Accumulate loss at each step against the next character.
+- Call loss.backward() once at the end → backpropagation-through-time (BPTT) through the unrolled steps. *Check BPTT QAs for more detail*
+
+
+### Practical Differences 
+
+- Unrolling & shapes
+    - CustomRNN/RNNCell: you loop over t, use inputs shaped (B, input_size) each step.
+    - nn.RNN: you pass (B,L,input_size) once; it loops internally (fast, fused), returns (B,L,hidden) and h_n
+
+- the gist: your class = cell + manual unroll; nn.RNN = optimized unroll + extras. Add a linear head to either to get task predictions.
+
+### When to prefer which
+
+- Use your cell (or nn.RNNCell) when you need step-wise custom logic (teacher forcing, scheduled sampling, constraints, attention fused per step, TBPTT control). 
+
+- Use nn.RNN for simplicity & speed when you just need a vanilla Elman RNN over a sequence (multi-layer, bidirectional, packed sequences, cuDNN). 
+
+---
+
 Here’s the core idea, super compact.
 
 ### Why a **GRUCell** in a decoder?
@@ -74,3 +111,4 @@ With `nn.GRU` you must **pre-construct the whole input sequence** (e.g., mix tea
 * Need **global receptive field / long horizon** with known future covariates? → **Transformer/TCN/SSM** decoders.
 
 That’s it: `GRUCell` = control; `GRU` = throughput. For bespoke decoding logic, write your own small recurrence or use an attention-augmented step loop.
+

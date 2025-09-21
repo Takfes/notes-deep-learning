@@ -66,3 +66,40 @@ You can think of an LSTM as doing **internal storytelling**:
 * If its job is “tell me something about each word/time”, you use $h_t$ at each step. If its job is “tell me something after the whole story”, you use $h_n$ (plus $c_n$, if needed).
 
 Prediction is always external to the cell: it’s what you build *on top* of some hidden state(s). Diagrams often show that arrow from hidden → output/prediction, but in PyTorch that arrow is your Linear (or whatever) layer. The internal LSTM doesn’t “decide” the output shape/prediction target—it simply produces the hidden states.
+
+---
+
+## Two different training regimes
+
+* **Per-step head (apply every time step)** → you’re doing a **many-to-many** setup (or teacher-forcing / autoregressive where you need a prediction at each step).
+* **Head only at the end** → you’re doing **many-to-one** (e.g., “predict the next value after a window”).
+
+### When should you apply the head at **every** step?
+
+* **Sequence labeling / many-to-many** tasks (predict a tag/value at **each** t). You’ll attach a head to all `h_t` (i.e., to `output` in PyTorch) and sum/average the loss over time. 
+
+* **Teacher forcing / autoregressive training** where your model must produce a prediction **each step** to be fed into the next step (decoder-style). You compute a head per step, optionally mix ground truth vs predicted inputs (scheduled sampling), and accumulate loss across steps.
+
+### When should you apply the head **only at the end**?
+
+* **Many-to-one** tasks (classification of a whole sequence, “next value after window”, etc.). Take the last hidden (`output[:, -1, :]` with `batch_first=True`, or `h_n` for the last layer) and pass it through a head once.
+
+### Mental model to remember
+
+* **Cell/RNN produces hidden states.**
+* **Head turns (some or all) hidden states into task predictions.**
+* Choose **last step** (many-to-one) or **every step** (many-to-many / autoregressive) based on your objective; the APIs (`output`, `h_n`) are designed to make both patterns easy.
+
+---
+
+### Mapping to the three implementations
+
+* **A: custom cell (manual loop)**
+  * *Many-to-one*: loop to compute the final `h_t`, apply head **once** on the last `h_t`.
+  * *Many-to-many / TF*: apply head **each step**, compute per-step loss, (optionally) feed predictions into the next step.
+
+* **B: `nn.RNNCell`** — Same as A; it’s still a **step API**. You unroll in Python and choose per-step vs last-step heads.
+
+* **C: `nn.RNN` (layer unrolls internally)** — Pass `(N, L, In)`; you get `output` (all `h_t`) and `h_n` (final hidden per layer).
+  * *Many-to-one*: `head(output[:, -1, :])` or `head(h_n[-1])`.
+  * *Many-to-many*: `head(output)` and time-reduce the loss.
