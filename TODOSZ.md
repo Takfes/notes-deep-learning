@@ -1,6 +1,18 @@
 
 # FUTURE TASKS
 
+## QUESTIONS/TASKS
+- refine and merge the code-commit prompt
+- Notebooks :
+    - sinusodial prediction
+    - custom RNNCell would need to manual unroll the series, whilst nn.RNN is fed the entire series and unrolls that internally : "We let Pytorch handle the rollout behind-the-scenes, so just feed in the whole encoder sequence"
+    - custom RNN, replicate the operations
+    - Encoder-Decoder - w/ and w/o attention
+
+- what happens with trend in timeseries? [medium blog](https://medium.com/@maxbrenner-ai/implementing-seq2seq-models-for-efficient-time-series-forecasting-88dba1d66187) referencing this [https://www.uber.com/en-GR/blog/m4-forecasting-competition/] - how to improve air passengers model; model seems to ignore trend
+- Prediction vs forecast task [ChatGPT Conversation](https://chatgpt.com/c/6890586c-1474-8324-a174-e830e8d5ec02)
+
+
 ## NEURAL NETS
 - [Udemy - Implementing a Neural Network from scratch with Numpy](https://titancement.udemy.com/course/the-complete-neural-networks-bootcamp-theory-applications/learn/lecture/18823906#overview)
 - review training & dataset/dataloaders. review batch, stochastic, mini-batch gradient descent

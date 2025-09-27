@@ -97,9 +97,9 @@ From the PyTorch docs:
 
 > `output, (h_n, c_n) = lstm(input, (h_0, c_0))`
 >
-> * `output`: tensor containing the output features $h_t$ from the **last layer** of the LSTM, for **each** $t$. ([PyTorch Documentation][1])
-> * `h_n`: tensor containing the **hidden state** for each element in the sequence **at time $t = seq\_len$**, for each layer / direction. ([PyTorch Documentation][1])
-> * `c_n`: same shape as `h_n`, containing the **cell state** for each element in the sequence at the final time-step. ([PyTorch Documentation][1])
+> * `output`: tensor containing the output features $h_t$ from the **last layer** of the LSTM, for **each** $t$.
+> * `h_n`: tensor containing the **hidden state** for each element in the sequence **at time $t = seq\_len$**, for each layer / direction. 
+> * `c_n`: same shape as `h_n`, containing the **cell state** for each element in the sequence at the final time-step.
 
 ---
 
@@ -121,9 +121,9 @@ From the PyTorch docs:
   h_n = \text{output}[-1]
   $$
 
-  (or `output[:, -1, :]` if `batch_first=True`). ([Stack Overflow][2])
+  (or `output[:, -1, :]` if `batch_first=True`).
 
-* If there are **multiple layers** or it is **bidirectional**, `h_n` includes hidden states from each layer / direction, so you must extract the corresponding part of `output` carefully (especially if directions get concatenated). They are related but `h_n` is a more compact summary. ([PyTorch Documentation][1])
+* If there are **multiple layers** or it is **bidirectional**, `h_n` includes hidden states from each layer / direction, so you must extract the corresponding part of `output` carefully (especially if directions get concatenated). They are related but `h_n` is a more compact summary.
 
 ---
 
@@ -133,7 +133,7 @@ From the PyTorch docs:
 
   1. `output` (sequence of hidden states from the last layer)
   2. `h_n` (final hidden states)
-  3. `c_n` (final cell states) ([PyTorch Documentation][1])
+  3. `c_n` (final cell states)
 
 * There is **no built-in “prediction”** under the hood; the LSTM cell itself does not produce “predictions” unless you add a head (e.g. a Linear layer) on top of some $h_t$. The “output” hidden states are often used as features for a later layer that “predicts”. The diagrams showing “output” may refer to $h_t$ or some transformation of it.
 
@@ -156,3 +156,177 @@ From the PyTorch docs:
 | `output` | `(seq_len, batch, hidden_size * num_directions)` or `(batch, seq_len, ...)` if `batch_first` | Hidden state $h_t$ for each $t$ in the input, last layer                  | Sequence tasks; need predictions at each time step; or feed each hidden to linear head; or for attention |
 | `h_n`    | `(num_layers * num_directions, batch, hidden_size)`                                          | Hidden state at final time-step for **each layer** (especially top layer) | Summary representation; many-to-one tasks; initializing decoder in seq2seq                               |
 | `c_n`    | same shape as `h_n`                                                                          | Cell state at final time step (long term memory)                          | Also useful for initializing decoder LSTM; sometimes used when preserving memory                         |
+
+---
+
+## What's the relationship/difference between output (h_t) and h_n 
+
+
+### 1. **Unidirectional, single-layer case**
+
+```python
+h_n[-1]  ≡  output[-1]
+```
+
+(both are the top layer’s hidden state at the last time step).
+So in this *simplest* setup, `h_n` doesn’t add new information — it’s redundant.
+
+---
+
+### 2. **Multi-layer case**
+
+Now we have **hidden states per layer**. [stackoverflow example](https://stackoverflow.com/questions/48302810/whats-the-difference-between-hidden-and-output-in-pytorch-lstm)
+
+* `output` only gives you the **top (last) layer** states across all time steps.
+* `h_n` gives you the **final state of *every layer***.
+
+Example:
+
+```python
+num_layers=3
+output:   (seq_len, batch, hidden)   # top layer only
+h_n:      (3, batch, hidden)         # final hidden from all 3 layers
+```
+
+So if you want to carry all intermediate layers’ states (e.g. for deep RNN stacking or custom heads), you need `h_n`.
+
+---
+
+### 3. **Bidirectional case**
+
+* `output[-1]` = concat of **forward-last** (t = end) and **backward-last** (t = start).
+* But `h_n` gives you these *separately*: forward and backward final states are stored as different entries along the first dimension.
+
+That matters if you don’t want the concat but prefer to process forward/backward independently, or if you need lower layers’ finals too.
+
+---
+
+### 4. **Variable-length sequences with packing**
+
+When you use `pack_padded_sequence`, `output` is packed and tricky to index.
+
+* `h_n` automatically aligns to each sequence’s actual end.
+* Extracting the last valid state from `output` is annoying (because padding differs per batch item).
+  So `h_n` is the “safe” way to get finals without manual indexing.
+
+---
+
+✅ **Summary**
+
+* In the trivial case (1 layer, unidirectional, no packing): `h_n[-1]` and `output[-1]` are the same.
+* In *all other cases* (multi-layer, bidirectional, variable lengths), `h_n` is **more general, explicit, and convenient**.
+  That’s why PyTorch exposes both.
+
+---
+
+# <answer1> “Between-layers output” vs “next-time-step self-consumption” (single LSTM cell inside a stacked LSTM)
+
+At a single time step **t** for a given **layer ℓ**, an LSTM cell computes:
+
+* **hₜ^(ℓ)**: hidden state (the “exposed” output)
+* **cₜ^(ℓ)**: cell state (the private memory)
+
+They’re used differently:
+
+* **Upward (to the next layer at the *same* time t):**
+  The **input to layer ℓ+1** at time t is **hₜ^(ℓ)** (often after dropout).
+
+  > Only **hₜ** goes upward.
+
+* **Forward in time (to the *same* layer at t+1):**
+  The **recurrent state** for the same layer is the pair **(hₜ^(ℓ), cₜ^(ℓ))**.
+
+  > Both **hₜ** *and* **cₜ** go forward in time; **cₜ** is never sent upward, it’s only for self-consumption.
+
+So: **hₜ** serves both roles (upward & forward), while **cₜ** serves only the forward-in-time role for that layer.
+
+---
+
+# <answer2> Why `output.shape` ≠ `h_n.shape` in a multi-layer stack
+
+Assume unidirectional for simplicity, `batch_first=False`:
+
+* **`output`** = all **time steps** from the **top layer only**
+  `output.shape == (S, B, H)`
+  (If bidirectional, it’s `(S, B, 2H)`.)
+
+* **`h_n`** = the **final hidden state** for **every layer** (time collapsed)
+  `h_n.shape == (L, B, H)`
+  (If bidirectional, `(L*2, B, H)`.)
+
+Intuition for sizes:
+
+* `output` keeps **time** (S) and drops **layer depth** (only top layer).
+* `h_n` keeps **layer depth** (L) and drops **time** (only the last step).
+
+---
+
+# <answer3> Intuition: what information each carries
+
+* **`output` (sequence of h’s from the top layer):**
+  Think “**representations at each token/time** after the whole stack processed them.”
+  Use this when you need per-step features: tagging, CTC, attention keys/values, etc.
+
+* **`h_n` (final hidden per layer):**
+  Think “**summary-at-the-end** for each layer.”
+  This is the state you’d carry to continue generation, initialize a decoder, or do sequence classification with a single vector (usually the **top-layer** row of `h_n`; for biLSTM you often concat forward/backward finals).
+
+Your phrasing is close:
+
+* `output` = **consecutive top-layer passes over time** (S vectors from the last layer).
+* `h_n` = **last vector for each layer** after rolling through the full sequence (time collapsed, depth retained).
+  And remember: for LSTMs the “internal memory” counterpart is **`c_n`**, same shape as `h_n`.
+
+---
+
+# <answer4> What feeds context in encoder–decoder? What forms the attention “matrix”?
+
+* **Classic (no attention) seq2seq with LSTM:**
+  The **context vector** is the encoder’s **final state**. In PyTorch terms:
+
+  * Use **`(h_n, c_n)`** from the encoder (often just the **top layer**; if bidirectional, concat forward/backward for the top layer before passing/transforming to the decoder’s initial state).
+  * Decoder is initialized with these as its initial `(h₀, c₀)`.
+
+* **With attention:**
+
+  * The **attention memory (keys/values)** is the **entire encoder `output` sequence** from the **top layer**: shape `(S, B, H)` (or `(S, B, 2H)` for biLSTM; many implementations transpose to `(B, S, H)` internally).
+  * The **query** at each decoder step is the decoder’s current hidden state.
+  * You’ll also need a **mask** if sequences are padded, so attention ignores padded positions.
+
+Rule of thumb:
+
+* **Context for init** ⇒ use **final states**: `h_n` (and `c_n` for LSTM).
+* **Context for attention** ⇒ use **all time-step outputs**: `output` (top layer).
+
+---
+
+## Tiny shape sanity check (PyTorch-ish)
+
+```python
+S, B, I, H, L = 20, 32, 128, 256, 3
+lstm = nn.LSTM(I, H, num_layers=L, bidirectional=False, batch_first=False)
+x = torch.randn(S, B, I)
+
+output, (h_n, c_n) = lstm(x)
+# output: (S, B, H)   -> attention memory
+# h_n:    (L, B, H)   -> pick h_n[-1] for top layer final
+# c_n:    (L, B, H)   -> pick c_n[-1] for top layer final
+```
+
+If bidirectional:
+
+```python
+# output: (S, B, 2H)     (concat of fwd and bwd)
+# h_n:    (2L, B, H)     (separate entries for fwd/bwd per layer)
+# top layer finals: h_fwd = h_n[-2], h_bwd = h_n[-1]
+# attention dim becomes 2H
+```
+
+---
+
+**Key takeaways**
+
+* Upward vs forward-in-time: upward gets **hₜ**, forward gets **(hₜ, cₜ)**.
+* `output` = **time axis kept**, **layers collapsed to top**.
+* `h_n`/`c_n` = **layers kept**, **time collapsed to last**.
+* Encoder–decoder: **init from `h_n`/`c_n`**, **attend over `output`**.
