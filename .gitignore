@@ -35,3 +35,4 @@ Thumbs.db
 # Custom ignore files
 PyTorch_Youtube_Luke_Ditria
 .env
+*.csv
