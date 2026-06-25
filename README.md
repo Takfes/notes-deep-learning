@@ -1,4 +1,8 @@
-# Resources
+# notes-deep-learning
+
+> **Note:** The Andrew Ng Deep Learning Specialization coursework and personal topic notes have been moved to [python-dl-coursera](https://github.com/Takfes/python-dl-coursera).
+
+## Resources
 ## 📚 Learn the Theory
 
 - [Coursera - Deep Learning Specialization](https://www.coursera.org/specializations/deep-learning)
